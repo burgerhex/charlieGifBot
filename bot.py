@@ -1,8 +1,7 @@
 import os
-# import random
+import random
 import discord
 import giphypop
-# import TenGiphPy
 
 COMMAND_START = "!"
 LINK_KEY = "url"
@@ -12,10 +11,6 @@ TOKEN = os.environ.get("BOT_TOKEN")
 
 GIPHY_KEY = os.environ.get("GIPHY_API_KEY")
 giphy = giphypop.Giphy(GIPHY_KEY)
-# giphy = TenGiphPy.Giphy(token=GIPHY_KEY)
-
-# TENOR_KEY = os.environ.get("TENOR_API_KEY")
-# tenor = TenGiphPy.Tenor(token=TENOR_KEY)
 
 
 @client.event
@@ -49,11 +44,29 @@ async def on_message(message: discord.Message):
     args = parts[1:]
 
     if cmd in ["hello", "hi", "hey"]:
-        await send(f"Hello, {author.mention}! :smile:")
+        await send(random.choice([
+            "shake shack?", "YOOOOO", "based based??", "alex literally shut the fuck up",
+            "justin you're literally so annoying", "listening to podcast rn",
+            "alkjfnlajniaundkljn", "WEIRDCHAMP", "POG", "LOL stop", "i'm on tiktok",
+            "new vid up on yt", "bedwars?", "wanna speedrun", "mc?", "fall guys?",
+            "OMG let's play speedrunners that actually sounds like so much fun",
+            "i'll prob just order a refund but wtv", "that's HYPE", "that's so pog",
+            "i hate college", "reading is for losers", "ping me when ur not playing league",
+            "i don't even like films or filmmaking", "gifs are so pog", "TIMOTHEE CHALAMET",
+            "laughing my ass off right now at the current moment, no cap",
+            "stop roasting my gifs let me live", "seraphine gap or smtn idk league",
+            "they really need to open up movie theaters bruh", "let's watch a movie",
+            "can we do something i'm so bored", "rgmormlkfdmsoimoan", "i love gifs so much",
+            "fuck you aviv", "gn"
+        ]))
 
 
     elif cmd in ["gif", "gifthat", "charlie", "char"]:
-        if not args:
+        search = None
+
+        if args:
+            search = " ".join(args)
+        else:
             messages = await channel.history(limit=2).flatten()
             if len(messages) < 2:
                 return
@@ -63,18 +76,20 @@ async def on_message(message: discord.Message):
             # assert messages[0].id == message.id
 
             search = messages[1].content
-            gif = None
 
-            try:
-                for giphy_image in giphy.search(search):
-                    gif = giphy_image[LINK_KEY]
-                    break
-            except StopIteration:
-                return
+        assert search is not None
+        gif = None
 
-            assert gif is not None
+        try:
+            for giphy_image in giphy.search(search):
+                gif = giphy_image[LINK_KEY]
+                break
+        except StopIteration:
+            return
 
-            await send(gif)
+        assert gif is not None
+
+        await send(gif)
 
 
 client.run(TOKEN)
