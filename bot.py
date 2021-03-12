@@ -3,7 +3,7 @@ import random
 import discord
 import giphypop
 
-COMMAND_START = "!"
+COMMAND_START = "charlie, "
 LINK_KEY = "url"
 
 client = discord.Client()
@@ -57,7 +57,7 @@ async def on_message(message: discord.Message):
     no_start = msg[len(COMMAND_START):]
     bad_parts = no_start.split(" ")
     parts = [part for part in bad_parts if part != ""]
-    cmd = parts[0]
+    cmd = parts[0].lower()
     args = parts[1:]
 
     if cmd in ["hello", "hi", "hey"]:
@@ -84,16 +84,26 @@ async def on_message(message: discord.Message):
 
             search = messages[1].content
 
+        # if search is empty, stop
+        if not search:
+            return
+
         gifs = []
 
         try:
+            # get all the gifs from this search
             for giphy_image in giphy.search(search):
                 gifs.append(giphy_image[LINK_KEY])
         except StopIteration:
-            return
+            pass
 
+        # send a random one if there are any
         if gifs:
-            await send(random.choice(gifs))
+            gif = random.choice(gifs)
+            print(f"Sending GIF {gif} in response to search \"{search}\"")
+            await send(gif)
+        else:
+            print(f"No GIFs found for search \"{search}\"")
 
 
 client.run(TOKEN)
