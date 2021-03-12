@@ -12,6 +12,23 @@ TOKEN = os.environ.get("BOT_TOKEN")
 GIPHY_KEY = os.environ.get("GIPHY_API_KEY")
 giphy = giphypop.Giphy(GIPHY_KEY)
 
+MESSAGES = [
+    "shake shack?", "YOOOOO", "based based??", "alex literally shut the fuck up",
+    "justin you're literally so annoying", "listening to podcast rn",
+    "alkjfnlajniaundkljn", "WEIRDCHAMP", "POG", "LOL stop", "i'm on tiktok",
+    "new vid up on yt", "bedwars?", "wanna speedrun", "mc?", "fall guys?",
+    "OMG let's play speedrunners that actually sounds like so much fun",
+    "i'll prob just order a refund but wtv", "that's HYPE", "that's so pog",
+    "i hate college", "reading is for losers", "ping me when ur not playing league",
+    "i don't even like films or filmmaking", "gifs are so pog", "TIMOTHEE CHALAMET",
+    "laughing my ass off right now at the current moment, no cap",
+    "stop roasting my gifs let me live", "seraphine gap or smtn idk league",
+    "they really need to open up movie theaters bruh", "let's watch a movie",
+    "can we do something i'm so bored", "rgmormlkfdmsoimoan", "i love gifs so much",
+    "fuck you aviv", "gn"
+]
+message_index = len(MESSAGES)
+
 
 @client.event
 async def on_ready():
@@ -27,7 +44,7 @@ async def on_message(message: discord.Message):
         return
 
     channel: discord.TextChannel = message.channel
-    send = channel.send # this is a function
+    send = channel.send  # this is a function
     author: discord.Member = message.author
     msg: str = message.content
 
@@ -44,26 +61,15 @@ async def on_message(message: discord.Message):
     args = parts[1:]
 
     if cmd in ["hello", "hi", "hey"]:
-        await send(random.choice([
-            "shake shack?", "YOOOOO", "based based??", "alex literally shut the fuck up",
-            "justin you're literally so annoying", "listening to podcast rn",
-            "alkjfnlajniaundkljn", "WEIRDCHAMP", "POG", "LOL stop", "i'm on tiktok",
-            "new vid up on yt", "bedwars?", "wanna speedrun", "mc?", "fall guys?",
-            "OMG let's play speedrunners that actually sounds like so much fun",
-            "i'll prob just order a refund but wtv", "that's HYPE", "that's so pog",
-            "i hate college", "reading is for losers", "ping me when ur not playing league",
-            "i don't even like films or filmmaking", "gifs are so pog", "TIMOTHEE CHALAMET",
-            "laughing my ass off right now at the current moment, no cap",
-            "stop roasting my gifs let me live", "seraphine gap or smtn idk league",
-            "they really need to open up movie theaters bruh", "let's watch a movie",
-            "can we do something i'm so bored", "rgmormlkfdmsoimoan", "i love gifs so much",
-            "fuck you aviv", "gn"
-        ]))
+        global message_index
+        if message_index >= len(MESSAGES):
+            random.shuffle(MESSAGES)
+            message_index = 0
+
+        await send(MESSAGES[message_index])
 
 
     elif cmd in ["gif", "gifthat", "charlie", "char"]:
-        search = None
-
         if args:
             search = " ".join(args)
         else:
@@ -77,18 +83,16 @@ async def on_message(message: discord.Message):
 
             search = messages[1].content
 
-        assert search is not None
-        gif = None
+        gifs = []
 
         try:
             for giphy_image in giphy.search(search):
-                gif = giphy_image[LINK_KEY]
-                break
+                gifs.append(giphy_image[LINK_KEY])
         except StopIteration:
             return
 
-        if gif:
-            await send(gif)
+        if gifs:
+            await send(random.choice(gifs))
 
 
 client.run(TOKEN)
