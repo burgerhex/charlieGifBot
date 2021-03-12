@@ -87,9 +87,8 @@ async def on_message(message: discord.Message):
         except StopIteration:
             return
 
-        assert gif is not None
-
-        await send(gif)
+        if gif:
+            await send(gif)
 
 
 client.run(TOKEN)
