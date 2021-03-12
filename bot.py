@@ -67,6 +67,7 @@ async def on_message(message: discord.Message):
             message_index = 0
 
         await send(MESSAGES[message_index])
+        message_index += 1
 
 
     elif cmd in ["gif", "gifthat", "charlie", "char"]:
